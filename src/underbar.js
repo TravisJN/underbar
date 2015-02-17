@@ -217,7 +217,6 @@
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(collection, function(wasFound, item) {
-      console.log(wasFound);
       if (wasFound) {
         return true;
       }
@@ -230,12 +229,63 @@
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
 
+    //set a boolean variable in case _.reduce returns a non-boolean value
+    var bool = false;
+
+    //return true for empty arrays
+    if (collection.length === 0){
+      return true;
+    }
+
+    //if there is no callback function, set it to be _.identity
+    //could not get iterator = _.identity(); to work so I rewrote the function
+    if (iterator === undefined) {
+      iterator = function(val) {
+        return val;
+      };      
+    }
+
+    bool = _.reduce(collection, function(wasFound, item) {
+          if (wasFound) {
+            if (iterator(item)){
+              return true;
+            } 
+              return false;
+          }
+          return false;
+        }, true);
+
+    //if _.reduce returns a non-boolean value, return false
+    if (bool == true) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+
+    //if there is no callback function, set it to be _.identity
+    //could not get iterator = _.identity(); to work so I rewrote the function
+    if (iterator === undefined) {
+      iterator = function(val) {
+        return val;
+      };      
+    }
+
+    //map the original array to a new array that determines whether each value
+    //is truthy or falsey
+    collection = _.map(collection, function(x) { return iterator(x) ? true : false; });
+
+    //if any items in the mapped array are true, return true
+    if (_.contains(collection, true)){
+      return true;
+    } else {
+      return false;
+    }
   };
 
 
@@ -258,11 +308,39 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    //keyArray will hold the keys of each object so they can be added to obj
+    var keyArray = [];
+
+    //loop through each object and store keys in keyArray
+    for (var i = 1; i < arguments.length; i++) {
+      keyArray = Object.keys(arguments[i]);
+      //loop through each key and add it and its value to obj
+      for (var j = 0; j < keyArray.length; j++) {
+        obj[keyArray[j]] = arguments[i][keyArray[j]];
+      }
+    }
+
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    //keyArray will hold the keys of each object so they can be added to obj
+    var keyArray = [];
+
+    //loop through each object and store keys in keyArray
+    for (var i = 1; i < arguments.length; i++) {
+      keyArray = Object.keys(arguments[i]);
+      //loop through each key and add it and its value to obj
+      for (var j = 0; j < keyArray.length; j++) {
+        //check if the key already exists in obj and do nothing if it exists
+        if (!(keyArray[j] in obj)){
+           obj[keyArray[j]] = arguments[i][keyArray[j]];
+        }        
+      }
+    }
+    return obj;
   };
 
 
@@ -288,7 +366,7 @@
     return function() {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // infromation from one function call to another.
+        // information from one function call to another.
         result = func.apply(this, arguments);
         alreadyCalled = true;
       }
@@ -306,6 +384,7 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -329,6 +408,7 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+
   };
 
 
