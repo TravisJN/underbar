@@ -437,8 +437,20 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-    var randIndex;
-    
+    var randArray = [];  //new randomized array
+    var randIndex;      //random index for retrieving value to push to randArray
+    var usedIndex = []; //array for storing indexes that have already been used
+
+    //loop until the arrays are the same length
+    while (array.length > randArray.length) {
+      randIndex = Math.floor(Math.random() * (array.length));
+      //if the index hasn't already been retrieved and pushed to randArray, store the index
+      //so it's not used again and push the item to randArray
+      if (!(_.contains(usedIndex, randIndex))){
+        usedIndex.push(randIndex);
+        randArray.push(array[randIndex]);
+      }
+    }
     return randArray;
   };
 
